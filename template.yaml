@@ -1,0 +1,107 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  businesscards-api
+
+Globals:
+  Function:
+    Runtime: python3.9
+    Timeout: 30
+    Environment:
+      Variables:
+        CARDS_TABLE: !Ref CardsTable
+    Architectures:
+      - x86_64
+  Api:  #
+    Cors: #
+      AllowMethods: "'DELETE,GET,HEAD,OPTIONS,PATCH,POST,PUT'"  #
+      AllowHeaders: "'Content-Type,X-Amz-Date,X-Amz-Security-Token,Authorization,X-Api-Key,X-Requested-With,Accept,Access-Control-Allow-Methods,Access-Control-Allow-Origin,Access-Control-Allow-Headers'"  #
+      AllowOrigin: "'*'"  #
+    Auth:     #
+      DefaultAuthorizer: CognitoAuthorizer     #
+      Authorizers:     #
+        CognitoAuthorizer:     #
+          UserPoolArn: arn:aws:cognito-idp:us-east-1:298008448376:userpool/us-east-1_BevsnL9Sg     #
+      AddDefaultAuthorizerToCorsPreflight: False     #######
+
+Resources:
+  CardsTable:
+    Type: AWS::Serverless::SimpleTable
+    Properties:
+      PrimaryKey:
+        Name: id        # uuid
+        Type: String    # Number 
+  CreateCardFunction:
+    Type: AWS::Serverless::Function # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: cards_api/
+      Handler: create.lambda_handler
+      Events:
+        CreateCards:
+          Type: Api
+          Properties:
+            Path: /cards
+            Method: POST
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CardsTable
+  ReadCardFunction:
+    Type: AWS::Serverless::Function # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: cards_api/
+      Handler: read.lambda_handler
+      Events:
+        ReadCards:
+          Type: Api
+          Properties:
+            Path: /cards/{id}
+            Method: GET
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref CardsTable
+  ReadAllCardFunction:
+    Type: AWS::Serverless::Function # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: cards_api/
+      Handler: readall.lambda_handler
+      Events:
+        ReadCards:
+          Type: Api
+          Properties:
+            Path: /cards
+            Method: GET
+      Policies:
+        - DynamoDBReadPolicy:
+            TableName: !Ref CardsTable
+  UpdateCardFunction:
+    Type: AWS::Serverless::Function # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: cards_api/
+      Handler: edit.lambda_handler  #update.lambda_handler
+      Events:
+        ReadCards:
+          Type: Api
+          Properties:
+            Path: /cards/{id}
+            Method: PUT #PATCH
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CardsTable
+  DeleteCardFunction:
+    Type: AWS::Serverless::Function # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: cards_api/
+      Handler: delete.lambda_handler
+      Events:
+        ReadCards:
+          Type: Api
+          Properties:
+            Path: /cards/{id}
+            Method: DELETE
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref CardsTable
+Outputs:
+  CreateCardsAPI:
+    Description: "API Gateway endpoint url for creating cards"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/cards"
