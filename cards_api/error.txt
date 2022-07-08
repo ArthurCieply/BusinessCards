@@ -1,0 +1,6 @@
+Access to fetch at 'https://780hvsuxgg.execute-api.us-east-1.amazonaws.com/Prod/cards' from origin 'http://localhost:3000' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested resource. If an opaque response serves your needs, set the request's mode to 'no-cors' to fetch the resource with CORS disabled.
+
+POST https://780hvsuxgg.execute-api.us-east-1.amazonaws.com/Prod/cards net::ERR_FAILED 502
+
+
+[ERROR] Runtime.MarshalError: Unable to marshal response: Object of type set is not JSON serializable

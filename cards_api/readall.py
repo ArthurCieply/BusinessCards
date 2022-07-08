@@ -32,10 +32,11 @@ def lambda_handler(event, context):
         'statusCode': 200,
         'headers': {
             "Access-Control-Allow-Origin" : "*",
-            #"Access-Control-Allow-Credentials": True
+            "Access-Control-Allow-Credentials": True,
             "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with",
-            'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-            "Content-Type": "application/json"
+            "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+            "Content-Type": "application/json",
+            "X-Requested-With": "*"
         },
         #'body': json.dumps(response['Items'])
         'body': json.dumps(body)
