@@ -4,6 +4,7 @@ import os
 import logging
 from jose import jwk, jwt
 from jose.utils import base64url_decode
+import urllib.request
 
 # TODO: get params for region_id, userpool_id, app_client_id from environment for auth purposes?
 # (SEE BELOW!)
