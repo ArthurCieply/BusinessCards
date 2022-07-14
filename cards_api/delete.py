@@ -78,6 +78,6 @@ def lambda_handler(event, context):
     multi_value_headers = {"Access-Control-Allow-Origin" : ["http://localhost:3000"], "Access-Control-Allow-Credentials": [True], "Access-Control-Allow-Headers" : ["Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"], "Access-Control-Allow-Methods": ["OPTIONS,POST,GET,PUT,DELETE,PATCH"], "Content-Type": ["application/json"], "X-Requested-With": ["*"]} 
     return{
         'statusCode': 200,
-        'headers': multi_value_headers,
+        'multiValueHeaders': multi_value_headers,
         'body': json.dumps({'message': 'Business Card Deleted'})
     }
