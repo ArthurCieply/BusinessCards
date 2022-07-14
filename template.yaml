@@ -25,12 +25,29 @@ Globals:
     #  AddDefaultAuthorizerToCorsPreflight: False     #######
 
 Resources:
+  #CardsTable:
+  #  Type: AWS::Serverless::SimpleTable
+  #  Properties:
+  #    PrimaryKey:
+  #      Name: id        # sub
+  #      Type: String    # Number 
   CardsTable:
-    Type: AWS::Serverless::SimpleTable
+    Type: AWS::DynamoDB::Table
     Properties:
-      PrimaryKey:
-        Name: id        # uuid
-        Type: String    # Number 
+      TableName: Cards_Table
+      BillingMode: PAY_PER_REQUEST
+      #ReadCapacityUnits: Long
+      #WriteCapacityUnits: Long
+      AttributeDefinitions: 
+        - AttributeName: id
+          AttributeType: S
+        - AttributeName: sort
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+        - AttributeName: sort
+          KeyType: RANGE
   CreateCardFunction:
     Type: AWS::Serverless::Function # https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -54,7 +71,8 @@ Resources:
         ReadCards:
           Type: Api
           Properties:
-            Path: /cards/{id}
+            #Path: /cards/{id}
+            Path: /cards/{id}/{sort}
             Method: GET
       Policies:
         - DynamoDBReadPolicy:
@@ -82,7 +100,8 @@ Resources:
         ReadCards:
           Type: Api
           Properties:
-            Path: /cards/{id}
+            #Path: /cards/{id}
+            Path: /cards/{id}/{sort}
             Method: PUT #PATCH
       Policies:
         - DynamoDBCrudPolicy:
@@ -96,7 +115,8 @@ Resources:
         ReadCards:
           Type: Api
           Properties:
-            Path: /cards/{id}
+            #Path: /cards/{id}
+            Path: /cards/{id}/{sort}
             Method: DELETE
       Policies:
         - DynamoDBCrudPolicy:

@@ -5,6 +5,8 @@ import logging
 from jose import jwk, jwt
 from jose.utils import base64url_decode
 import urllib.request
+from uuid import uuid4
+
 
 # TODO: get params for region_id, userpool_id, app_client_id from environment for auth purposes?
 # (SEE BELOW!)
@@ -13,12 +15,22 @@ table_name = os.environ.get('CARDS_TABLE')
 logger = logging.getLogger('Creat card')
 logger.setLevel(logging.INFO)
 
+#def set_default(obj):
+#    if isinstance(obj, set):
+#        return list(obj)
+#    raise TypeError
+
 # hanlder as defined in build.toml:
 def lambda_handler(event, context):
+    print("Event: ", event)
+    print("Context: ", context)
+    id_token = event["headers"]["Authorization"]
+    id_token = id_token[7:]
+    token = id_token
     # authorization follows the example of https://github.com/awslabs/aws-support-tools/blob/master/Cognito/decode-verify-jwt/decode-verify-jwt.py
     # (some modifications to pull in parameters from event object instead of setting statically)
     # get token:
-    token = event['token']
+    #   Substituted for above    token = event['token']
     # get the 'kid' from the heads prior to verification
     headers = jwt.get_unverified_headers(token)
     kid = headers['kid']
@@ -27,11 +39,12 @@ def lambda_handler(event, context):
     # region (just pulled this from samconfig.toml)
     region_id = "us-east-1"
     # get user pool ID:
-    userpool_id = event['userPoolId']
+    #userpool_id = event['userPoolId']
+    userpool_id = "us-east-1_yHJhy2Fkd"
 
     # get the *app client id*:
-    app_client_id = event['callerContext']['clientId']
-    logger.info(app_client_id)
+    ########   No callerContext or clientID in event     app_client_id = event['callerContext']['clientId']
+    #                   logger.info(app_client_id)
     keys_url = 'https://cognito-idp.{}.amazonaws.com/{}/.well-known/jwks.json'.format(region_id, userpool_id)
 
     # REVIEW: unlike in example from 'aws-support-tools', this will be run each time the lambda is called (not wise, but didn't want to mess setting static variables)
@@ -68,14 +81,14 @@ def lambda_handler(event, context):
     card = json.loads(event['body'])
     table = dynamodb.Table(table_name)
 
-
-    # REVIEW: this is most likely wrong!
-    print("Lambda Request ID:", context.aws_request_id)
+    sub = event["requestContext"]["authorizer"]["claims"]["sub"]
+    print("sub:", sub)
 
     response = table.put_item(
         TableName=table_name,
         Item={
-            'id': str(context.aws_request_id),#card, #event['userAttributes'['sub']],
+            'id': sub,
+            'sort': str(uuid4().hex),
             'cardName': card['cardName'],
             'age': card['age'],
             'dob': card['dob'],
@@ -89,23 +102,26 @@ def lambda_handler(event, context):
     # TODO: revisit after fixing authorization (see above!)
     # ... did not test at all!
     print("Response:", response)
-    #logger.info(response)
-    print("Event:", event)
-    print("Context:", context)
-    #   I think this will be the one I need to access sub but I'm going to start getting cognito to work before this because according to this there is no such thing as authorizers     print("Cognito sub:", event['requestContext']['authorizer']['claims']['sub'])
-    #  Maybe this one  print("Sub:", context.authorizer.claims.sub)
+    
+    multi_value_headers = {"Access-Control-Allow-Origin" : ["http://localhost:3000"], "Access-Control-Allow-Credentials": [True], "Access-Control-Allow-Headers" : ["Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"], "Access-Control-Allow-Methods": ["GET, POST, OPTIONS, PUT"], "Content-Type": ["application/json"], "X-Requested-With": ["*"]}
     return{
         'statusCode': 200,
-        'cors': True,
-        'headers': {
-            "Access-Control-Allow-Origin" : "http://localhost:3000",#"*",
-            "Access-Control-Allow-Credentials": True,
-            "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with",
-            "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT",
-            "Content-Type": "application/json",
-            "X-Requested-With": "*"
-        },
-        'body': {
-            json.dumps({'message': 'Business Card Created'})
-        }
+        #'cors': True,
+        #'headers': {
+        #    "Access-Control-Allow-Origin" : "http://localhost:3000",#"*",
+        #    "Access-Control-Allow-Credentials": True,
+        #    "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with",
+        #    "Access-Control-Allow-Methods": "GET, POST, OPTIONS, PUT",
+        #    "Content-Type": "application/json",
+        #    "X-Requested-With": "*"
+        #},
+        #'multiValueHeaders': {"Access-Control-Allow-Origin" : ["http://localhost:3000"], "Access-Control-Allow-Credentials": [True], "Access-Control-Allow-Headers" : ["Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"], "Access-Control-Allow-Methods": ["GET, POST, OPTIONS, PUT"], "Content-Type": ["application/json"], "X-Requested-With": ["*"]},
+        'multiValueHeaders': multi_value_headers,
+        'body': json.dumps({'message': 'Business Card Created'})
+        #'body': {
+            #json.dumps({"Business Card Created"})
+            #json.dumps({'message': 'Business Card Created'})
+            #json.dumps({'message': 'Business Card Created'}, default=str)
+            #json.dumps({'message': 'Business Card Created'}, default=set_default)
+        #}
     }
