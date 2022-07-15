@@ -12,7 +12,9 @@ logger.setLevel(logging.INFO)
 def lambda_handler(event, context):
     card = json.loads(event['body'])
     table = dynamodb.Table(table_name)
-    card_id = int(event['pathParameters']['id'])
+    #card_id = int(event['pathParameters']['id'])
+    card_id = str(event['pathParameters']['id'])
+    card_sort = str(event['pathParameters']['sort'])
     update_key = card['updateKey']
     update_value = card['updateValue']
     response = table.update_item(
