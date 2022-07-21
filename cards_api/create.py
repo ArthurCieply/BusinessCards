@@ -96,7 +96,8 @@ def lambda_handler(event, context):
             'employer': card['employer'],
             'cityState': card['cityState'],
             'email': card['email'],
-            'phoneNumber': card['phoneNumber']
+            'phoneNumber': card['phoneNumber'],
+            'pictureName': card['pictureName']
         }
     )
     # TODO: revisit after fixing authorization (see above!)
