@@ -88,7 +88,8 @@ def lambda_handler(event, context):
         TableName=table_name,
         Item={
             'id': sub,
-            'sort': str(uuid4().hex),
+            #'sort': str(uuid4().hex),
+            'sort': card['sort'],
             'cardName': card['cardName'],
             'age': card['age'],
             'dob': card['dob'],
