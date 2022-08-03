@@ -75,9 +75,9 @@ def lambda_handler(event, context):
     logger.info(response)
 
     #  localhost
-    multi_value_headers = {"Access-Control-Allow-Origin": ["http://localhost:3000"], "Access-Control-Allow-Credentials": [True], "Access-Control-Allow-Headers" : ["Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"], "Access-Control-Allow-Methods": ["GET, POST, PUT, OPTIONS"], "Content-Type": ["application/json"], "X-Requested-With": ["*"]}
+    #multi_value_headers = {"Access-Control-Allow-Origin": ["http://localhost:3000"], "Access-Control-Allow-Credentials": [True], "Access-Control-Allow-Headers" : ["Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"], "Access-Control-Allow-Methods": ["GET, POST, PUT, OPTIONS"], "Content-Type": ["application/json"], "X-Requested-With": ["*"]}
     #   gh-pg
-    #multi_value_headers = {"Access-Control-Allow-Origin": ["https://arthurcieply.github.io"], "Access-Control-Allow-Credentials": [True], "Access-Control-Allow-Headers" : ["Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"], "Access-Control-Allow-Methods": ["GET, POST, PUT, OPTIONS"], "Content-Type": ["application/json"], "X-Requested-With": ["*"]}
+    multi_value_headers = {"Access-Control-Allow-Origin": ["https://arthurcieply.github.io"], "Access-Control-Allow-Credentials": [True], "Access-Control-Allow-Headers" : ["Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"], "Access-Control-Allow-Methods": ["GET, POST, PUT, OPTIONS"], "Content-Type": ["application/json"], "X-Requested-With": ["*"]}
     return{
         'statusCode': 200,
         'multiValueHeaders': multi_value_headers,
