@@ -75,7 +75,11 @@ def lambda_handler(event, context):
     #response = table.delete_item(KeyConditionExpression=Key('id').eq(card_id))
     logger.info(response)
 
-    multi_value_headers = {"Access-Control-Allow-Origin" : ["http://localhost:3000", "https://arthurcieply.github.io"], "Access-Control-Allow-Credentials": [True], "Access-Control-Allow-Headers" : ["Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"], "Access-Control-Allow-Methods": ["OPTIONS,POST,GET,PUT,DELETE,PATCH"], "Content-Type": ["application/json"], "X-Requested-With": ["*"]} 
+    #   localhost
+    multi_value_headers = {"Access-Control-Allow-Origin" : ["http://localhost:3000"], "Access-Control-Allow-Credentials": [True], "Access-Control-Allow-Headers" : ["Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"], "Access-Control-Allow-Methods": ["OPTIONS,POST,GET,PUT,DELETE,PATCH"], "Content-Type": ["application/json"], "X-Requested-With": ["*"]} 
+    #   gh-pg
+    #multi_value_headers = {"Access-Control-Allow-Origin" : ["https://arthurcieply.github.io"], "Access-Control-Allow-Credentials": [True], "Access-Control-Allow-Headers" : ["Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"], "Access-Control-Allow-Methods": ["OPTIONS,POST,GET,PUT,DELETE,PATCH"], "Content-Type": ["application/json"], "X-Requested-With": ["*"]} 
+
     return{
         'statusCode': 200,
         'multiValueHeaders': multi_value_headers,
