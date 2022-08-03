@@ -28,13 +28,13 @@ def lambda_handler(event, context):
         ReturnValues="UPDATED_NEW"
     )
     logger.info(response)
-    return{
-        'statusCode': 200,
-        'headers': {
-            "Access-Control-Allow-Origin" : "*",
-            #"Access-Control-Allow-Credentials": True
-            "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE,PATCH",
-            "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"
-        },
-        'body': json.dumps({'message': 'Business Card Updated'})
-    }
+    #return{
+    #    'statusCode': 200,
+    #    'headers': {
+    #        "Access-Control-Allow-Origin" : "*",
+    #        #"Access-Control-Allow-Credentials": True
+    #        "Access-Control-Allow-Methods": "OPTIONS,POST,GET,PUT,DELETE,PATCH",
+    #        "Access-Control-Allow-Headers" : "Content-Type,X-Amz-Date,Authorization,X-Api-Key,x-requested-with"
+    #    },
+    #    'body': json.dumps({'message': 'Business Card Updated'})
+    #}
